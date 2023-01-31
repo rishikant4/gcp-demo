@@ -74,8 +74,6 @@ pipeline {
 		sh 'docker logout https://gcr.io'
 		
         }
-
-       }
        }
     }
 }
