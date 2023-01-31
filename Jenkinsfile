@@ -6,6 +6,7 @@ pipeline {
                 CLUSTER_NAME = 'gke'
                 LOCATION = 'us-central1-c'
                 CREDENTIALS_ID = 'My First Project'
+		GCR_CRED=credentials('gcr')
 		GCR_REPO='gcr.io/calm-seeker-375715'
 		IMAGE_TAG='multidemo:0.1'
 	}
@@ -66,10 +67,11 @@ pipeline {
 	   }*/
 	    stage('gcr login and push'){
         steps{
-            withCredentials([string(credentialsId: 'gcr', variable: 'gcr')]) {
-                
+                sh 'echo "$GCR_CRED" > calm-seeker-375715-d45d8e6d5797.json'
+		sh 'docker login -u _json_key -p "$(cat calm-seeker-375715-d45d8e6d5797.json)" https://gcr.io'
 		sh "docker build . -t ${GCR_REPO}:${IMAGE_TAG}"
 		sh "docker push ${GCR_REPO}:${IMAGE_TAG}"
+		sh 'docker logout https://gcr.io'
 		
         }
 
