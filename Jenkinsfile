@@ -67,12 +67,12 @@ pipeline {
 	   }*/
 	    stage('gcr login and push'){
         steps{
-                sh 'echo "$GCR_CRED" > calm-seeker-375715-d45d8e6d5797.json'
-		sh 'docker login -u _json_key -p "$(cat calm-seeker-375715-d45d8e6d5797.json)" https://gcr.io'
+		withCredentials([file(credentialsId: 'gcr1', variable: 'gcr')]){
+               
 		sh "docker build . -t ${GCR_REPO}:${IMAGE_TAG}"
 		sh "docker push ${GCR_REPO}:${IMAGE_TAG}"
-		sh 'docker logout https://gcr.io'
 		
+		}
         }
        }
     }
