@@ -5,7 +5,9 @@ pipeline {
 		PROJECT_ID = 'calm-seeker-375715'
                 CLUSTER_NAME = 'gke'
                 LOCATION = 'us-central1-c'
-                CREDENTIALS_ID = 'My First Project'		
+                CREDENTIALS_ID = 'My First Project'
+		GCR_REPO='gcr.io/calm-seeker-375715'
+		IMAGE_TAG='multidemo:0.1'
 	}
 	
     stages {	
@@ -28,7 +30,7 @@ pipeline {
 		  sh 'mvn test'
 		}
 	   }
-	   stage('Build Docker Image') { 
+	   /*stage('Build Docker Image') { 
 		steps {
 		   sh 'whoami'
                    script {
@@ -61,6 +63,17 @@ pipeline {
 			 verifyDeployments: true])
 		   echo "Deployment Finished ..."
             }
-	   }
+	   }*/
+	    stage('gcr login and push'){
+        steps{
+            withCredentials([string(credentialsId: 'gcr', variable: 'gcr')]) {
+                
+		sh "docker build . -t ${GCR_REPO}:${IMAGE_TAG}"
+		sh "docker push ${GCR_REPO}:${IMAGE_TAG}"
+		
+        }
+
+       }
+       }
     }
 }
