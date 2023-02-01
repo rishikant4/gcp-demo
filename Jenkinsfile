@@ -67,8 +67,8 @@ pipeline {
 	   }*/
 	    stage('gcr login and push'){
         steps{
-		withCredentials([file(credentialsId: 'gcr1', variable: 'gcr')]){
-               
+		withCredentials([file(credentialsId: 'gcr', variable: 'GCR_KEY')]){
+     		sh "gcloud auth activate-service-account --key-file='$GCR_KEY'"
 		sh "docker build . -t ${GCR_REPO}:${IMAGE_TAG}"
 		sh "docker push ${GCR_REPO}:${IMAGE_TAG}"
 		
